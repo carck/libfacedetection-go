@@ -6,7 +6,7 @@ extern "C" {
 	#include "libfacedetection_capi.h"
 }
 
-#include "facedetectcnn.h"
+#include <facedetection/facedetectcnn.h>
 
 #include <string>
 
