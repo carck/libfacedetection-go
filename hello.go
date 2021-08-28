@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	m := GetImage("./libfacedetection/images/keliamoniz2.jpg")
+	m := GetImage("/home/l2/photoprism/storage/cache/thumbnails/f/f/8/ff894c29e388014a6675367836f8e8c6605c0c70_1280x1024_fit.jpg")
 	rgb, w, h := libfacedetection.NewRGBImageFrom(m)
 
 	faces := libfacedetection.DetectFaceRGB(rgb, w, h, w*3)
@@ -35,13 +35,15 @@ func main() {
 				m2.Set(x, y, m.At(x, y))
 			}
 		}
-
-		x1 := faces[0].X
-		y1 := faces[0].Y
-		x2 := faces[0].W + x1
-		y2 := faces[0].H + y1
+		for i := 0; i < len(faces); i++ {
+		x1 := faces[i].X
+		y1 := faces[i].Y
+		x2 := faces[i].W + x1
+		y2 := faces[i].H + y1
 
 		DrawRect(m2, x1, y1, x2, y2)
+		}
+
 		SaveImage(m2, "a.out.png")
 	}
 }

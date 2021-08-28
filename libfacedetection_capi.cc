@@ -51,10 +51,11 @@ libfacedetection_capi_result_t* libfacedetection_capi_facedetect_rgba(
 	uint8_t* rgb = (uint8_t*)rgbBuffer.data();
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
-			*rgb++ = *rgba++; // r
-			*rgb++ = *rgba++; // g
-			*rgb++ = *rgba++; // b
-			rgba++;           // a
+			*(rgb + 2) = *rgba++; // r
+			*(rgb + 1) = *rgba++; // g
+			*rgb       = *rgba++; // b
+			rgba++;               // a
+			rgb += 3;
 		}
 	}
 
@@ -81,12 +82,14 @@ libfacedetection_capi_bool_t libfacedetection_capi_result_get(
 	if(i < 0 || i >= n) return 0;
 
 	short * p = ((short*)(pResults+1))+142*i;
-	face->x = p[0];
-	face->y = p[1];
-	face->w = p[2];
-	face->h = p[3];
-	face->neighbors = p[4];
-	face->angle = p[5];
+	face->confidence = p[0];
+	face->x = p[1];
+	face->y = p[2];
+	face->w = p[3];
+	face->h = p[4];
+	for(int j = 0; j < 10; j++) {
+		face->landmarks[j] = p[5+j];
+	}
 
 	return 1;
 }

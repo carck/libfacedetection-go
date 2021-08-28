@@ -15,12 +15,12 @@ import (
 )
 
 type Face struct {
+	Confidence int
 	X         int
 	Y         int
 	W         int
 	H         int
-	Neighbors int
-	Angle     int
+	Landmarks []int
 }
 
 func DetectFaceRGBA(m *image.RGBA) []Face {
@@ -45,13 +45,16 @@ func DetectFaceRGBA(m *image.RGBA) []Face {
 	for i := 0; i < n; i++ {
 		var t C.libfacedetection_capi_face_t
 		C.libfacedetection_capi_result_get(rv, C.int(i), &t)
-
+		
+		face[i].Confidence = int(t.confidence)
 		face[i].X = int(t.x)
 		face[i].Y = int(t.y)
 		face[i].W = int(t.w)
 		face[i].H = int(t.h)
-		face[i].Neighbors = int(t.neighbors)
-		face[i].Angle = int(t.angle)
+		face[i].Landmarks = make([]int, 10)
+		for j := 0; j < 10; j++ {
+			face[i].Landmarks[j] = int(t.landmarks[j])
+		}
 	}
 
 	return face
@@ -80,12 +83,15 @@ func DetectFaceRGB(rgb []byte, w, h, stride int) []Face {
 		var t C.libfacedetection_capi_face_t
 		C.libfacedetection_capi_result_get(rv, C.int(i), &t)
 
+		face[i].Confidence = int(t.confidence)
 		face[i].X = int(t.x)
 		face[i].Y = int(t.y)
 		face[i].W = int(t.w)
 		face[i].H = int(t.h)
-		face[i].Neighbors = int(t.neighbors)
-		face[i].Angle = int(t.angle)
+		face[i].Landmarks = make([]int, 10)
+                for j := 0; j < 10; j++ {
+                        face[i].Landmarks[j] = int(t.landmarks[j])
+                }
 	}
 
 	return face
@@ -102,9 +108,9 @@ func NewRGBImageFrom(m image.Image) (rgb []byte, w, h int) {
 	for y := b.Min.Y; y < b.Max.Y; y++ {
 		for x := b.Min.X; x < b.Max.X; x++ {
 			pr, pg, pb, _ := m.At(x, y).RGBA()
-			rgb[off+0] = uint8(pr >> 8)
+			rgb[off+0] = uint8(pb >> 8)
 			rgb[off+1] = uint8(pg >> 8)
-			rgb[off+2] = uint8(pb >> 8)
+			rgb[off+2] = uint8(pr>> 8)
 			off += 3
 		}
 	}

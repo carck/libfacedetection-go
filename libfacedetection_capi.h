@@ -17,12 +17,12 @@ typedef struct libfacedetection_capi_face_t   libfacedetection_capi_face_t;
 typedef struct libfacedetection_capi_result_t libfacedetection_capi_result_t;
 
 struct libfacedetection_capi_face_t {
+	int confidence;
 	int x;
 	int y;
 	int w;
 	int h;
-	int neighbors;
-	int angle;
+	int landmarks[10];
 };
 
 libfacedetection_capi_result_t* libfacedetection_capi_facedetect_rgb(
