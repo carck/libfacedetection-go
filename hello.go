@@ -36,12 +36,16 @@ func main() {
 			}
 		}
 		for i := 0; i < len(faces); i++ {
-		x1 := faces[i].X
-		y1 := faces[i].Y
-		x2 := faces[i].W + x1
-		y2 := faces[i].H + y1
+			x1 := faces[i].X
+			y1 := faces[i].Y
+			x2 := faces[i].W + x1
+			y2 := faces[i].H + y1
 
-		DrawRect(m2, x1, y1, x2, y2)
+			DrawRect(m2, x1, y1, x2, y2)
+			
+			for j := 0; j < len(faces[i].Landmarks) / 2; j++ {
+				DrawRect(m2, faces[i].Landmarks[j], faces[i].Landmarks[j+1], faces[i].Landmarks[j]+1, faces[i].Landmarks[j+1]+1)
+			}
 		}
 
 		SaveImage(m2, "a.out.png")
