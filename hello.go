@@ -46,6 +46,8 @@ func main() {
 			for j := 0; j < len(faces[i].Landmarks) / 2; j++ {
 				DrawRect(m2, faces[i].Landmarks[j], faces[i].Landmarks[j+1], faces[i].Landmarks[j]+1, faces[i].Landmarks[j+1]+1)
 			}
+			
+			fmt.Printf("%d %s\n", i, PnPoly(faces[i].Landmarks))
 		}
 
 		SaveImage(m2, "a.out.png")
@@ -100,3 +102,30 @@ func DrawRect(m draw.Image, x1, y1, x2, y2 int) {
 	DrawVLine(m, x1, y1, y2)
 	DrawVLine(m, x2, y1, y2)
 }
+
+func PnPoly(landmarks []int) bool {
+    nverts := 5
+    intersect := false
+    j := 0
+
+    px := landmarks[4]
+    py := landmarks[5]
+
+    for i := 0; i < nverts && i != 2; i++ {
+        piX := landmarks[i*2]
+        piY := landmarks[i*2+1]
+
+        pjX := landmarks[j*2]
+        pjY := landmarks[j*2+1]
+
+        if ((piY > py) != (pjY > py)) &&
+            (px < (pjX-piX) * (py-piY) / (pjY-piY) + piX) {
+            intersect = !intersect
+        }
+
+        j = i
+
+    }
+    return intersect
+}
+
